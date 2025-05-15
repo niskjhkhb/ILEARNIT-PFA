@@ -1,0 +1,39 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+{% block content %}
+
+<div style="background-Image: linear-gradient(rgb(208, 233, 240),rgb(251, 232, 184));  min-height: 100vh; padding-top: 50px;">
+<div class="container" style="margin-top: 50px;">
+    <div class="card shadow p-4" style="max-width: 500px; margin: auto;">
+        <div class="text-center mb-4">
+            <img src="{% static 'courses/panda.png' %}" alt="Profile Image" class="rounded-circle" width="120">
+            <h3 class="mt-3">{{ request.user.username }}</h3>
+            <p>{{ request.user.email }}</p>
+        </div>
+
+        <!-- Update username form -->
+        <form method="POST" action="{% url 'update_profile' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-labe mb-3" style="padding-left:185px; font-weight:bold; ">Username:</label>
+                <input type="text" name="username" class="form-control" value="{{ request.user.username }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Username</button>
+        </form>
+
+        <hr>
+
+        <!-- Delete account form -->
+        <form method="POST" action="{% url 'delete_account' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100 mt-2" onclick="return confirm('Are you sure you want to delete your account? This cannot be undone.')">
+                Delete My Account
+            </button>
+        </form>
+
+        <a href="{% url 'login' %}" class="btn btn-outline-secondary w-100 mt-3">Logout</a>
+    </div>
+</div>
+</div>
+
+{% endblock %}

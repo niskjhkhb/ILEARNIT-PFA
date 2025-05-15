@@ -1,0 +1,116 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+
+{% block title %}Courses{% endblock %}
+
+{% block content %}
+
+<style>
+/* Sidebar styling */
+.sidebar {
+    height: 100vh;
+    width: 200px;
+    position: fixed;
+    top: 52px; /* adjust if navbar height different */
+    left: 0;
+    background-color: #343a40; /* dark sidebar */
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+
+
+.sidebar ul.components li a {
+    color: #adb5bd;
+    padding: 10px 15px;
+    display: block;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.sidebar ul.components li a:hover {
+    background-color: #495057;
+    color: #fff;
+}
+
+/* Content area styling */
+.content-area {
+    margin-left:190px;
+    padding: 60px 40px;
+    min-height: 100vh;
+    
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .content-area {
+        margin-left: 0;
+    }
+
+
+
+</style>
+
+<!-- Sidebar -->
+<sidebar class="sidebar">
+   
+    <ul class="list-unstyled components p-2">
+        {% for course in courses %}
+        <li>
+            <a href="{% url 'course_detail' course.course_slug %}">{{ course.course_title }}</a>
+        </li>
+        {% empty %}
+        <li><span class="text-light">No courses available.</span></li>
+        {% endfor %}
+    </ul>
+</sidebar>
+
+<!-- Main Content -->
+<div class="content-area">
+    <div class="container">
+        <h1 class=" mb-4 fw-bold mt-5 mb-5" style="padding-left:300px;  color:rgb(5, 62, 78) !important;" >Welcome to Your Learning Hub</h1>
+        <div class="row text-center mt-5 ">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-book-fill text-primary fs-1"></i>
+                        <h5 class="card-title mt-3 fw-bold">Expert Content</h5>
+                        <p class="card-text">Access in-depth, carefully curated materials prepared by industry experts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-bar-chart-line-fill text-success fs-1"></i>
+                        <h5 class="card-title mt-3 fw-bold">Track Progress</h5>
+                        <p class="card-text">Monitor your learning journey and stay motivated with real-time progress tracking.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-award-fill text-warning fs-1"></i>
+                        <h5 class="card-title mt-3 fw-bold">Earn Certificates</h5>
+                        <p class="card-text" >Complete courses and assessments to earn certificates that showcase your skills.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-5 text-muted text-center" style="font-weight:bold"> <--- Select a course from the left to start learning now.</p>
+    </div>
+</div>
+
+<!-- Bootstrap Icons CDN (add in base.html head ONCE if not added yet) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+{% endblock %}

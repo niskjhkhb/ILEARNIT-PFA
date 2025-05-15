@@ -1,0 +1,142 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}
+{{ course.course_title }}
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Sidebar styling (keep it as is) */
+    .sidebar {
+        height: 100vh;
+        width: 200px;
+        position: fixed;
+        top: 52px;
+        left: 0;
+        background-color: #343a40;
+        padding-top: 20px;
+        overflow-y: auto;
+    }
+
+    .sidebar ul.components li a {
+        color: #adb5bd;
+        padding: 10px 15px;
+        display: block;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .sidebar ul.components li a:hover {
+        background-color: #495057;
+        color: #fff;
+    }
+
+    /* New Main Content Styling */
+    .main-content {
+        margin-left: 200px;
+        margin-top: 52px;
+        padding: 40px 60px;
+        min-height: calc(100vh - 52px);
+        background-color: #f9f9fb;
+    }
+
+    .main-content h2 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #0f2d4b;
+        margin-bottom: 20px;
+    }
+
+    .main-content p {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #333;
+        max-width: 800px;
+    }
+
+    /* Floating Buttons bottom right */
+    .action-buttons {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        z-index: 1000;
+    }
+
+    .action-buttons a {
+       
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    .action-buttons .btn-success {
+        background-color: #28a745;
+    }
+
+    .action-buttons .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .action-buttons .btn-warning {
+        background-color: #f8c200;
+    }
+
+    .action-buttons .btn-warning:hover {
+        background-color: #e6b000;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+        .main-content {
+            margin-left: 0;
+            padding: 20px;
+        }
+
+        .action-buttons {
+            right: 15px;
+            bottom: 15px;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<!-- Sidebar -->
+<sidebar class="sidebar">
+    <ul class="list-unstyled components p-2">
+        {% for course in courses %}
+        <li>
+            <a href="{% url 'course_detail' course.course_slug %}">{{ course.course_title }}</a>
+        </li>
+        {% empty %}
+        <li><span class="text-light">No courses available.</span></li>
+        {% endfor %}
+    </ul>
+</sidebar>
+
+<!-- Main Content -->
+<div class="main-content">
+    <h2>{{ course.course_title }}</h2>
+    <p>{{ course.course_description }}</p>
+
+    {% if quiz_score is not None %}
+    <div class="quiz-score mt-4 p-3 bg-info-subtle rounded text-dark border border-info" style="max-width: 400px;">
+        <strong>Your Quiz Score:</strong> {{ quiz_score|floatformat:2 }}%
+    </div>
+    {% endif %}
+</div>
+
+<!-- Floating action buttons -->
+<div class="action-buttons">
+    <a href="{% url 'enroll' course.id %}" class="btn btn-success">Enroll</a>
+    <a href="{% url 'quiz' course.course_slug %}" class="btn btn-warning">Take Quiz</a>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,70 @@
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.navbar.scrolled {
+    background-color: #01f7ff !important; /* New background color */
+    transition: background-color 0.3s ease;
+}
+/*show dropdown after hover : 
+.nav-item:hover .dropdown-menu {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}*/
+.navbar .nav-link:hover {
+    text-decoration: underline; /* Remove underline */
+    color: #ffd900; /* Change text color to Bootstrap primary color */
+    background-color: transparent; /* Ensure no background color is applied */
+}
+
+.btn {
+    width: 100px; /* Set a fixed width */
+    height: 40px; /* Set a fixed height */
+    width: auto;
+    text-align: center; /* Center the text */
+    line-height: 1.5; /* Adjust line height for better text alignment */
+    white-space: nowrap; 
+}
+ 
+.btn:hover {
+    background-color: #ffd75e; /* Light blue background */
+    color: #333; /* Dark text color */
+    border-radius: 5px; /* Optional: Adds rounded corners */
+    transition: all 0.1s ease; /* Smooth transition effect */
+
+  }
+
+  
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.btn {
+ 
+    font-weight: 600;
+    border: none;
+    border-radius: 50px !important;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 20px rgba(255, 58, 130, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 25px rgba(255, 58, 130, 0.4);
+    border-radius: 50px;
+}
