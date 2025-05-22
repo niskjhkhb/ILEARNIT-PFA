@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',  
+    'allauth.socialaccount.providers.google', 
+    'ckeditor', 
    
 
 ]
@@ -91,17 +92,13 @@ WSGI_APPLICATION = 'elearning.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-     },
-     'mysql': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'elearning_db',  # your database name
-        'USER': 'root',       # your MySQL username
-        'PASSWORD': '',  # your MySQL password
-        'HOST': 'localhost',
+        'USER': 'root',  # your MySQL username
+        'PASSWORD': 'Mysqlpassword2005.',  # your MySQL password
+        'HOST': '127.0.0.1',
         'PORT': '3306',
-    },
+    }
 }
 
 
@@ -186,5 +183,17 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Or another session backend
 
+
 ACCOUNT_LOGIN_METHODS = {'username'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'extraPlugins': 'codesnippet',
+        'codeSnippet_theme': 'monokai',
+    },
+}

@@ -78,7 +78,10 @@
 .sidebar ul li a.active {
     background-color: #0056b3; /* Darker blue for active link */
     color: white;
+    
 }
+
+
 
 </style>
 </head>
@@ -87,7 +90,7 @@
 <!--Navbar -->
 <nav class="navbar navbar-expand-sm bg-info navbar-dark fixed-top p-0">
     <div class="container-fluid ">
-        <a class="navbar-brand text-dark fw-bold fs-3" href="#">ILearnIT</a>
+        <a class="navbar-brand  text-dark fw-bold fs-3" href="{% url 'home' %}">ILearnIT</a>
    
     <div class="container-fluid ">
         <ul class="navbar-nav ">
@@ -123,7 +126,8 @@
         {% if user.is_authenticated %}
             <div class="dropdown">
                 <a href="{% url 'profile' %}" class="profile-icon d-flex align-items-center justify-content-center text-decoration-none ms-4" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{% static 'courses/panda.png' %}" alt="Profile Image" class="rounded-circle" width="40">
+                    <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" class="navbar-profile-pic rounded-circle" width="40" height="40">
+  
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                     <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person-circle me-2"></i>Profile</a></li>

@@ -7,6 +7,7 @@ urlpatterns = [
     path('baseview/',views.baseview, name='baseview'),
     path('course/<slug:course_slug>/', views.course_detail, name='course_detail'),
     
+    
     path('enroll/<int:course_id>/', views.enroll, name='enroll'),  # Add this line
     path('topic/<slug:topic_slug>/', views.topic_courses, name='topic_courses'),
     path('search/', views.search_courses, name='search_courses'),

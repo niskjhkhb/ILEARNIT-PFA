@@ -59,8 +59,9 @@
         {% if user.is_authenticated %}
             <div class="dropdown">
                 <a href="{% url 'profile' %}" class="profile-icon d-flex align-items-center justify-content-center text-decoration-none ms-4" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{% static 'courses/panda.png' %}" alt="Profile Image" class="rounded-circle" width="40">
-                </a>
+                    <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" class="navbar-profile-pic rounded-circle" width="40" height="40">
+  
+ </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                     <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
                     <li><a href="#" class="dropdown-item" onclick="document.getElementById('logout-form').submit();">
@@ -81,6 +82,43 @@
 </nav>
 <!--page Content-->
 <section >
+                <style>
+            body, html {
+                height: 100%;
+                margin: 0;
+            }
+        
+            body {
+                background-color: transparent; /* Make body background transparent */
+            }
+        
+            .gradient-background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1; /* Place behind all other content */
+            }
+        
+            section {
+                position: relative; /* Create a stacking context */
+                z-index: 1; /* Ensure section content is above the gradient */
+            }
+        
+            footer {
+                position: relative; /* Create a stacking context */
+                z-index: 2; /* Ensure footer is above the gradient */
+            }
+        
+            .unified-background {
+                background-color: transparent; /* Make unified-background transparent */
+            }
+        
+            .card-background {
+                background-color: transparent; /* Make card-background transparent */
+            }
+        </style>
     
     <div class="gradient-background">
         <div class="gradient-sphere sphere-1"></div>
@@ -147,8 +185,8 @@
                         </div>
                         <h5 class="card-title fw-bold">Python</h5>
                         <p class="card-text text-muted">A versatile language for web, data science, and more.</p>
-                        <a href="#" class="btn btn-primary rounded-pill px-4">Learn More</a>
-                    </div>
+                        <a href="{% url 'course_detail' 'python' %}" class="btn btn-primary rounded-pill px-4">Learn More</a>
+                         </div>
                 </div>
             </div>
             <!-- JavaScript Card -->
@@ -160,7 +198,7 @@
                         </div>
                         <h5 class="card-title fw-bold">JavaScript</h5>
                         <p class="card-text text-muted">The language of the web for interactive applications.</p>
-                        <a href="#" class="btn btn-warning rounded-pill px-4">Learn More</a>
+                        <a href="{% url 'course_detail' 'JavaScript' %}" class="btn btn-warning rounded-pill px-4">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -173,7 +211,7 @@
                         </div>
                         <h5 class="card-title fw-bold">Java</h5>
                         <p class="card-text text-muted">A powerful language for enterprise and mobile apps.</p>
-                        <a href="#" class="btn btn-danger rounded-pill px-4">Learn More</a>
+                        <a href="{% url 'course_detail' 'java' %}" class="btn btn-danger rounded-pill px-4">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -186,7 +224,7 @@
                         </div>
                         <h5 class="card-title fw-bold">C++</h5>
                         <p class="card-text text-muted">A high-performance language for system programming.</p>
-                        <a href="#" class="btn btn-info rounded-pill px-4">Learn More</a>
+                        <a href="{% url 'course_detail' 'cplus' %}" class="btn btn-info rounded-pill px-4">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -199,7 +237,7 @@
                         </div>
                         <h5 class="card-title fw-bold">Ruby</h5>
                         <p class="card-text text-muted">A dynamic language for web development and scripting.</p>
-                        <a href="#" class="btn btn-danger rounded-pill px-4">Learn More</a>
+                        <a href="{% url 'course_detail' 'ruby' %}" class="btn btn-danger rounded-pill px-4">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -212,7 +250,7 @@
                         </div>
                         <h5 class="card-title fw-bold">PHP</h5>
                         <p class="card-text text-muted">A popular language for server-side web development.</p>
-                        <a href="#" class="btn btn-secondary rounded-pill px-4">Learn More</a>
+                        <a href="{% url 'course_detail' 'php' %}" class="btn btn-secondary rounded-pill px-4">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -237,7 +275,7 @@
                         </div>
                         <h5 class="card-title fw-bold">MongoDB</h5>
                         <p class="card-text text-muted">A NoSQL database for modern applications.</p>
-                        <a href="#" class="btn btn-success rounded-pill px-4 mt-auto">Learn More</a>
+                        <a href="{% url 'course_detail' 'MongoDB' %}" class="btn btn-success rounded-pill px-4 mt-auto">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -250,7 +288,7 @@
                         </div>
                         <h5 class="card-title fw-bold">MySQL</h5>
                         <p class="card-text text-muted">A popular relational database management system.</p>
-                        <a href="#" class="btn btn-primary rounded-pill px-4 mt-auto">Learn More</a>
+                        <a href="{% url 'course_detail' 'MySQL' %}" class="btn btn-primary rounded-pill px-4 mt-auto">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -263,7 +301,7 @@
                         </div>
                         <h5 class="card-title fw-bold">PostgreSQL</h5>
                         <p class="card-text text-muted">An advanced open-source relational database.</p>
-                        <a href="#" class="btn btn-info rounded-pill px-4 mt-auto">Learn More</a>
+                        <a href="{% url 'course_detail' 'PostgreSQL' %}" class="btn btn-info rounded-pill px-4 mt-auto">Learn More</a>
                     </div>
                 </div>
             </div>

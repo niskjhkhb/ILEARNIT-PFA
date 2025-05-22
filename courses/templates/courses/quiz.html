@@ -6,12 +6,11 @@
 
 {% block content %}
 <style>
-    /* Sidebar styling */
-    .sidebar {
+     .sidebar {
         height: 100vh;
         width: 200px;
         position: fixed;
-        top: 52px; /* Adjust top to match the header */
+        top: 52px;
         left: 0;
         background-color: #343a40;
         padding-top: 20px;
@@ -31,35 +30,29 @@
         background-color: #495057;
         color: #fff;
     }
-
-    /* Main Content Styling */
     .quiz-content {
-        margin-left: 20px;  /* Adjust for sidebar width */
-        padding: 40px 60px;
-        min-height: calc(100vh - 52px); /* Full height minus top header */
-        background-color: #f9f9fb;
-        position: relative;
+        padding: 60px 40px;
+        background-color: #f8f9fa;
+        width: 100%;
     }
 
-    .quiz-content h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
+    .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .quiz-header h1 {
+        font-size: 2.2rem;
+        font-weight: bold;
         color: #0f2d4b;
-        margin-bottom: 20px;
-    }
-
-    .quiz-content .form-check {
         margin-bottom: 10px;
     }
 
-    /* Back to course icon styling */
     .back-to-course-btn {
-        position: absolute;
-        top: 20px;
-       
-        font-size: 2rem;
-        color: #007bff;
-        cursor: pointer;
+        font-size: 1.5rem;
+        color: #0d6efd;
         text-decoration: none;
     }
 
@@ -67,83 +60,127 @@
         color: #0056b3;
     }
 
-    .course-name {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #0f2d4b;
-        margin-bottom: 20px;
+    .question-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .question-card p {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #343a40;
+    }
+
+    .form-check-label {
+        font-weight: 400;
+        font-size: 1rem;
+        color: #495057;
+    }
+
+    .btn-submit {
+        background-color: rgb(2, 225, 255);
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px 20px;
+    }
+
+    @media (max-width: 768px) {
+        .quiz-content {
+            margin-left: 0;
+            padding: 20px;
+        }
+
+        .sidebar {
+            display: none;
+        }
+
+        .quiz-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 </style>
 
-<div class="container-fluid mt-5" style="display: flex; padding-left: 200px;"> <!-- Adjust for sidebar width -->
-
-    <!-- Sidebar for Lectures -->
+<div class="container-fluid mt-5" style="display: flex; padding-left: 210px;">
+    <!-- Sidebar -->
     <sidebar class="sidebar">
-        <ul class="list-unstyled components">
-            {% for course in courses %}
-                <li>
-                    <a href="{% url 'course_detail' course.course_slug %}">
-                        {{ course.course_title }}
-                    </a>
-                </li>
-            {% empty %}
-                <li>No courses available.</li>
-            {% endfor %}
-        </ul>
-    </sidebar>
+   
+    <ul class="list-unstyled components p-2">
+        {% for course in courses %}
+        <li>
+            <a href="{% url 'course_detail' course.course_slug %}">{{ course.course_title }}</a>
+        </li>
+        {% empty %}
+        <li><span class="text-light">No courses available.</span></li>
+        {% endfor %}
+    </ul>
+</sidebar>
 
-    <!-- Main content area -->
+    <!-- Main Content -->
     <div class="quiz-content">
-    
-         <!-- Back to Course Icon -->
-         <a href="{% url 'course_detail' course.course_slug %}" class="back-to-course-btn">
-            <i class="bi bi-arrow-left-circle"></i> <!-- Bootstrap Icon -->
-        </a>
-<br>
-<br>
 
-        <h1 class="text-center mb-4">{{ quiz.title }}</h1>
-        
-        <!-- Display Course Name -->
-        <h1 class="course-name">{{ course.course_title }} Quiz</h1>
+        <!-- Header -->
+        <div class="quiz-header mb-4">
+            <h1>{{ quiz.title }}</h1>
+            <a href="{% url 'course_detail' course.course_slug %}" class="back-to-course-btn">
+                <i class="bi bi-arrow-left-circle me-2"></i> Back to Course
+            </a>
+        </div>
 
+        <!-- Course Info -->
+        <p class="lead text-muted mb-4"><strong>Course:</strong> {{ course.course_title }}</p>
 
+        <!-- Quiz Form -->
         <form method="post" action="{% url 'submit_quiz' course.course_slug %}">
             {% csrf_token %}
             
             {% for data in quiz_data %}
-                <div class="quiz-section">
-                    {% for question in data.questions %}
-                        <div class="question">
-                            <p>{{ question.question.text }}</p>
-                            
+                <h3 class="mb-4">{{ data.quiz.title }}</h3>
+
+                {% for question in data.questions %}
+                    <div class="question-card">
+                        <p><strong>Q{{ forloop.counter }}: {{ question.question.text }}</strong></p>
+
+                        {% if question.is_multi %}
                             {% for answer in question.answers %}
-                                <div class="form-check">
-                                    <input 
-                                        class="form-check-input" 
-                                        type="radio" 
-                                        name="question_{{ question.question.id }}" 
-                                        id="answer_{{ answer.id }}" 
-                                        value="{{ answer.id }}">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="question_{{ question.question.id }}_multiple"
+                                           value="{{ answer.id }}"
+                                           id="answer_{{ answer.id }}">
                                     <label class="form-check-label" for="answer_{{ answer.id }}">
                                         {{ answer.text }}
                                     </label>
                                 </div>
                             {% endfor %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% empty %}
-                <p>No quizzes available for this course.</p>
+                        {% else %}
+                            {% for answer in question.answers %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="question_{{ question.question.id }}"
+                                           value="{{ answer.id }}"
+                                           id="answer_{{ answer.id }}">
+                                    <label class="form-check-label" for="answer_{{ answer.id }}">
+                                        {{ answer.text }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
             {% endfor %}
-            <br>
-            
-            <button type="submit" class="btn btn-success">Submit Quiz</button>
+
+            <button type="submit" class="btn btn-submit mt-3">Submit Quiz</button>
         </form>
-        <div class="container-fluid mt-5">
-</div>
 
     </div>
 </div>
-
 {% endblock %}

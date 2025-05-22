@@ -1,6 +1,12 @@
 
+import re
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from ckeditor.fields import RichTextField
+
+
 
 
 
@@ -9,6 +15,26 @@ IS_ACTIVE = (
     ('Yes', 'Yes'),
     ('No', 'No')
 )
+
+def user_profile_picture_path(instance, filename):
+    # Save image in MEDIA_ROOT/profile_pics/user_<id>/<filename>
+    return f'profile_pics/user_{instance.user.id}/{filename}'
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=user_profile_picture_path, default='default_avatar.png')
+
+    def __str__(self):
+        return f"{self.user.username} Profile"
+
+# Automatically create or update profile when user is created/updated
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
+
+
 
 class Topic(models.Model):
     topic_title = models.CharField(max_length=50, verbose_name="Topic Title")
@@ -38,7 +64,7 @@ class Topic(models.Model):
 class Course(models.Model):
     course_title = models.CharField(max_length=200, verbose_name="Course Title")
     course_slug = models.SlugField(verbose_name="Course Slug")
-    course_description = models.TextField(blank=True, null=True, verbose_name="Course Description")
+    course_description = RichTextField(blank=True, null=True, verbose_name="Course Description")
     course_topic = models.ManyToManyField(Topic, verbose_name="Course Topic")
     course_image = models.ImageField(upload_to="courses/", blank=True, null=True)
     course_is_active = models.CharField(
@@ -71,11 +97,20 @@ class Course(models.Model):
 class Lecture(models.Model):
     lecture_title = models.CharField(max_length=255, verbose_name="Lecture Title")
     lecture_slug = models.SlugField(verbose_name="Lecture Slug")
-    lecture_description = models.TextField(blank=True, null=True, verbose_name="Lecture Description")
+    lecture_description = RichTextField(blank=True, null=True, verbose_name="Lecture Description")
     course = models.ForeignKey(Course, verbose_name="Course", on_delete=models.CASCADE, related_name='lectures')
     lecture_file = models.FileField(upload_to="files/", blank=True, null=True)
     lecture_video = models.CharField(max_length=150, blank=True, null=True, verbose_name="Video ID")
-
+    
+    @property
+    def youtube_video_id(self):
+        if not self.lecture_video:
+            return ""
+        # Extract video ID from URL using regex
+        match = re.search(r'(?:v=|youtu\.be/)([^&/?]+)', self.lecture_video)
+        if match:
+            return match.group(1)
+        return self.lecture_video  # fallback if already ID
     lecture_previewable = models.CharField(
         choices = IS_ACTIVE,
         default = 'Yes',

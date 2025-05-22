@@ -6,7 +6,6 @@
 
 {% block content %}
 <style>
-    /* Sidebar styling (keep it as is) */
     .sidebar {
         height: 100vh;
         width: 200px;
@@ -32,7 +31,6 @@
         color: #fff;
     }
 
-    /* New Main Content Styling */
     .main-content {
         margin-left: 200px;
         margin-top: 52px;
@@ -41,68 +39,10 @@
         background-color: #f9f9fb;
     }
 
-    .main-content h2 {
-        font-size: 3rem;
-        font-weight: 700;
-        color: #0f2d4b;
-        margin-bottom: 20px;
-    }
-
-    .main-content p {
-        font-size: 1.2rem;
-        line-height: 1.8;
-        color: #333;
-        max-width: 800px;
-    }
-
-    /* Floating Buttons bottom right */
-    .action-buttons {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        z-index: 1000;
-    }
-
-    .action-buttons a {
-       
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        text-decoration: none;
-        color: white;
-        transition: background-color 0.3s ease;
-    }
-
-    .action-buttons .btn-success {
-        background-color: #28a745;
-    }
-
-    .action-buttons .btn-success:hover {
-        background-color: #218838;
-    }
-
-    .action-buttons .btn-warning {
-        background-color: #f8c200;
-    }
-
-    .action-buttons .btn-warning:hover {
-        background-color: #e6b000;
-    }
-
-    /* Responsive tweaks */
     @media (max-width: 768px) {
         .main-content {
             margin-left: 0;
             padding: 20px;
-        }
-
-        .action-buttons {
-            right: 15px;
-            bottom: 15px;
-            flex-direction: column;
         }
     }
 </style>
@@ -122,21 +62,78 @@
 
 <!-- Main Content -->
 <div class="main-content">
-    <h2>{{ course.course_title }}</h2>
-    <p>{{ course.course_description }}</p>
+    <div class="container">
+        <div class="card shadow-lg border-0 rounded-4 mb-4">
+            <div class="row g-0">
+                {% if course.course_image %}
+                <div class="col-md-5">
+                    <img src="{{ course.course_image.url }}" class="img-fluid rounded-start h-100 object-fit-cover" alt="{{ course.course_title }}">
+                </div>
+                {% endif %}
+                <div class="col-md-7">
+                    <div class="card-body p-4">
+                        <h2 class="card-title text-primary">{{ course.course_title }}</h2>
+                        <br>
+                        <p class="card-text text-muted">{{ course.course_description | safe }}</p>
 
-    {% if quiz_score is not None %}
-    <div class="quiz-score mt-4 p-3 bg-info-subtle rounded text-dark border border-info" style="max-width: 400px;">
-        <strong>Your Quiz Score:</strong> {{ quiz_score|floatformat:2 }}%
+                        <!-- Info Badges -->
+                        <div class="mb-3">
+                            {% if course.course_is_featured == "Yes" %}
+                                <span class="badge bg-warning text-dark me-2"> Featured</span>
+                            {% endif %}
+                            {% if course.course_is_active == "Yes" %}
+                                <span class="badge bg-success me-2">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary me-2">Inactive</span>
+                            {% endif %}
+                            <span class="badge bg-light text-dark border">
+                                Created: {{ course.course_created_at|date:"M d, Y" }}
+                            </span>
+                        </div>
+
+                        <!-- Topics -->
+                        {% if course.course_topic.all %}
+                        <div class="mb-3">
+                            <strong>Topics:</strong>
+                            {% for topic in course.course_topic.all %}
+                                <span class="badge bg-info text-dark me-1">{{  topic }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Quiz Score -->
+                        {% if quiz_score is not None %}
+                        <div class="alert alert-info mt-3" style="max-width: 350px;">
+                            <strong>Your Quiz Score:</strong> {{ quiz_score|floatformat:2 }}%
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4 d-flex flex-wrap gap-2">
+                            <a href="{% url 'enroll' course.id %}" class="btn btn-success px-4 py-2"> Enroll Now</a>
+                            <a href="{% url 'quiz' course.course_slug %}" class="btn btn-warning px-4 py-2 text-dark"> Take Quiz</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add lectures below (optional) -->
+        {% if course.lectures.all %}
+        <div class="mt-5">
+            <h4 class="mb-3">Lectures</h4>
+            <div class="list-group">
+                {% for lecture in course.lectures.all %}
+                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    {{ lecture.lecture_title }}
+                    {% if lecture.lecture_previewable == "Yes" %}
+                        <span class="badge bg-success">Preview</span>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
-
-<!-- Floating action buttons -->
-<div class="action-buttons">
-    <a href="{% url 'enroll' course.id %}" class="btn btn-success">Enroll</a>
-    <a href="{% url 'quiz' course.course_slug %}" class="btn btn-warning">Take Quiz</a>
-</div>
-
-
 {% endblock %}

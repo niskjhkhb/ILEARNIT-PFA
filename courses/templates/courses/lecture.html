@@ -6,190 +6,219 @@
 
 {% block content %}
 <style>
-    /* Sidebar styling to match the second template */
-    .sidebar {
-        height: 100vh;
-        width: 200px;
-        position: fixed;
-        top: 52px; /* Adjust top to match the header */
-        left: 0;
-        background-color: #343a40;
-        padding-top: 20px;
-        overflow-y: auto;
-    }
+   .sidebar {
+    height: 100vh;
+    width: 300px;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    background-color: #343a40;
+    padding-top: 20px;
+    overflow-y: auto;
+}
 
-    .sidebar ul.components li a {
-        color: #adb5bd;
-        padding: 10px 15px;
-        display: block;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
+.sidebar ul.components li a {
+    color: #adb5bd;
+    padding: 10px 15px;
+    display: block;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
 
-    .sidebar ul.components li a:hover {
-        background-color: #495057;
-        color: #fff;
-    }
+.sidebar ul.components li a:hover {
+    background-color: #495057;
+    color: #fff;
+}
 
-    /* Main Content Styling */
+
+
+    /* Main container */
     .lecture-content {
-        margin-left: 20px;  /* Reduced spacing from sidebar */
-        padding: 40px 60px;
-        min-height: calc(100vh - 52px); /* Full height minus top header */
-        background-color: #f9f9fb;
+        margin-left: 250px;
+        padding: 60px 40px;
+        background-color: #f8f9fa;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        gap: 40px;
+    }
+    @media (max-width: 768px) {
+        .lecture-content {
+            margin-left: 0;
+            padding: 20px;
+        }
     }
 
-    .lecture-content h2 {
-        font-size: 2.5rem;
+    /* Section styles */
+    section {
+        background: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    section h2, section h3, section h4 {
+        margin-bottom: 15px;
+        color:rgb(0, 0, 0);
         font-weight: 700;
-        color: #0f2d4b;
-        margin-bottom: 20px;
+        border-bottom: 2px solidrgb(13, 201, 253);
+        padding-bottom: 5px;
     }
 
+    /* Lecture title and description */
+    .lecture-title {
+        font-size: 2rem;
+    }
     .lecture-description {
-        font-size: 1.2rem;
-        color: #333;
-        line-height: 1.8;
+        font-size: 1.1rem;
+        color: #444;
     }
 
-    .lecture-video iframe {
-        border-radius: 8px;
-        border: 1px solid #ddd;
+    /* Video section */
+    .video-section {
+        margin-top: auto; /* Push video to bottom */
     }
-
-    /* Styling the comment form */
-    .comment-form textarea {
+    .video-container {
+        position: relative;
         width: 100%;
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: 5px;
-        border: 1px solid #ddd;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
     }
 
-    .comment-form button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .comment-form button:hover {
-        background-color: #0056b3;
-    }
-
-    /* Comment Styling */
+    /* Comments styling */
     .comment {
-        background-color: #f9f9f9;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        margin-bottom: 20px;
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
         padding: 15px;
+        margin-bottom: 15px;
     }
-
-    /* Styling for the comments section */
-    .comments-section h3 {
-        font-size: 1.5rem;
-        color: #333;
-        font-weight: bold;
+    .comment strong {
+        color: #0d6efd;
     }
-
-    .comment .delete-btn {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        border-radius: 5px;
+    .delete-btn {
         float: right;
+        margin-top: -10px;
+    }
+    .comment-form textarea {
+        border-radius: 8px;
     }
 
-    .comment .delete-btn:hover {
-        background-color: #c82333;
+    /* Completed button */
+    .btn-complete {
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+    }
+
+    .button-12 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 6px 14px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        border-radius: 6px;
+        border: none;
+        background: #6E6D70;
+        box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), inset 0px 0.5px 0.5px rgba(255, 255, 255, 0.5), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.12);
+        color: #DFDEDF;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        margin-top: 10px;
+    }
+    .button-12:focus {
+        box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+        outline: 0;
     }
 </style>
 
-<div class="container-fluid mt-5" style="display: flex; padding-left: 200px;"> <!-- Adjust for sidebar width -->
-
-    <!-- Sidebar for Lectures -->
-    <sidebar class="sidebar">
-        <ul class="list-unstyled components">
-            {% for lecture in lectures %}
-                <li class="{% if lecture == lecture_selected %}active{% endif %}">
-                    <a href="{% url 'lecture_selected' course.course_slug lecture.lecture_slug %}">
-                        {{ lecture.lecture_title }}
-                    </a>
-                </li>
-            {% empty %}
-                <li>No lectures available.</li>
-            {% endfor %}
-        </ul>
-    </sidebar>
-
-    <!-- Main content area -->
-    <div class="lecture-content">
-        <h2>{{ lecture_selected.lecture_title }}</h2>
-        <p class="lecture-description">{{ lecture_selected.lecture_description }}</p>
-
-        {% if lecture_selected.lecture_video %}
-        <div class="mt-4 lecture-video">
-            <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ lecture_selected.lecture_video }}" frameborder="0" allowfullscreen></iframe>
-        </div>
-        {% endif %}
+<!-- Sidebar -->
+<sidebar class="sidebar">
+    <ul class="list-unstyled components p-2">
+        {% for lecture in lectures %}
+        <li class="{% if lecture == lecture_selected %}active{% endif %}">
+            <a href="{% url 'lecture_selected' course.course_slug lecture.lecture_slug %}">
+                 {{ lecture.lecture_title }}
+            </a>
+        </li>
+        {% empty %}
+        <li><span class="text-light px-3">No lectures available.</span></li>
+        {% endfor %}
+    </ul>
+</sidebar>
 
 
-        <!-- Mark as Completed Button -->
+<!-- Main Content -->
+<div class="lecture-content">
 
-{% if user.is_authenticated %}
-  {% if lecture_selected.id in completed_lecture_ids %}
-    <div class="alert alert-success mt-3">
-      ✅ You've completed this lecture!
-    </div>
-  {% else %}
-    <form method="post" action="{% url 'mark_lecture_complete' course.course_slug lecture_selected.lecture_slug %}" class="mt-3">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary">
-        Mark as Completed
-      </button>
-    </form>
-  {% endif %}
-{% endif %}
+    <!-- Lecture Info Section -->
+    <section class="lecture-info">
+        <h2 class="lecture-title">{{ lecture_selected.lecture_title }}</h2>
+        <p class="lecture-description">{{ lecture_selected.lecture_description |safe }}</p>
 
-
-        <!-- Comments Section -->
-        <div class="comments-section mt-5">
-            <h3>Comments</h3>
-
-            <!-- Comment Form -->
-            <form method="POST" class="comment-form" action="{% url 'lecture_selected' course.course_slug lecture_selected.lecture_slug %}">
+        {% if user.is_authenticated %}
+            {% if lecture_selected.id in completed_lecture_ids %}
+            <div class="alert alert-success">✅ You've completed this lecture!</div>
+            {% else %}
+            <form method="post" action="{% url 'mark_lecture_complete' course.course_slug lecture_selected.lecture_slug %}">
                 {% csrf_token %}
-                <textarea name="comment" id="comment-text" class="form-control" placeholder="Add your comment..." rows="4"></textarea><br>
-                <button type="submit" class="btn btn-primary">Submit Comment</button>
+                <button type="submit" class="button-12 btn-complete">Mark as Completed</button>
             </form>
+            {% endif %}
+        {% endif %}
+    </section>
 
-            <!-- Display Comments -->
-            <div class="comments-list mt-4" id="comments-list">
-                {% for comment in comments %}
-                <div class="comment mb-3 p-3" style="background-color: #f9f9f9; border-radius: 5px; border: 1px solid #ddd;">
-                    <strong>{{ comment.user.username }}</strong>
-                    <p>{{ comment.text }}</p>
-                    <!-- Delete Button only visible for the user who created the comment -->
-                    {% if comment.user == request.user %}
-                        <form method="POST" action="{% url 'delete_comment' comment.id %}">{% csrf_token %}
-                            <button type="submit" class="delete-btn">Delete</button>
-                        </form>
-                    {% endif %}
-                </div>
-                {% empty %}
-                <p>No comments yet. Be the first to comment!</p>
-                {% endfor %}
-            </div>
+     <!-- Video Section at bottom -->
+    {% if lecture_selected.lecture_video %}
+    <section class="video-section">
+        <h3>Lecture Video</h3>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/{{ lecture_selected.youtube_video_id }}" frameborder="0" allowfullscreen></iframe>
         </div>
-    </div>
+    </section>
+    {% endif %}
+
+
+
+    <!-- Comments Section -->
+    <section class="comments-section">
+        <h3>Comments</h3>
+
+        <form method="POST" action="{% url 'lecture_selected' course.course_slug lecture_selected.lecture_slug %}" class="comment-form mb-4">
+            {% csrf_token %}
+            <textarea name="comment" rows="4" class="form-control mb-2" placeholder="Write a comment..."></textarea>
+            <button type="submit" class="button-12" role="button">Comment</button>
+        </form>
+
+        {% for comment in comments %}
+        <div class="comment">
+            <strong>{{ comment.user.username }}</strong>
+            <p class="mb-2">{{ comment.text }}</p>
+            {% if comment.user == request.user %}
+            <form method="POST" action="{% url 'delete_comment' comment.id %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger delete-btn">Delete</button>
+            </form>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
+        {% endfor %}
+    </section>
 </div>
-
+   
 {% endblock %}
-

@@ -22,7 +22,11 @@ def courses_processor(request):
     return {'courses': courses}
 
 def home(request):
-    return render(request,'courses/index.html')
+    courses = Course.objects.all()  # Fetch all courses
+    context = {
+        'courses': courses,
+    }
+    return render(request, 'courses/index.html', context)
 
 
 def signup(request):        
@@ -47,7 +51,7 @@ from django.contrib.auth.views import LoginView
 class CustomLoginView(LoginView):
     template_name = 'courses/login.html'  
 
-    def form_valid(self, form):
+def form_valid(self, form):
         # Check if "Remember Me" is selected
         remember_me = self.request.POST.get('remember', None)
 
@@ -97,12 +101,24 @@ def profile(request):
 def update_profile(request):
     if request.method == 'POST':
         new_username = request.POST.get('username')
+        new_image = request.FILES.get('profile_image')
+
+        user = request.user
         if new_username:
-            request.user.username = new_username
-            request.user.save()
-            messages.success(request, "Username updated successfully.")
-            return redirect('profile')
+            user.username = new_username
+            user.save()
+
+        if new_image:
+            profile = user.profile
+            profile.image = new_image
+            profile.save()
+     
+        messages.success(request, "Profile updated successfully.")
+        return redirect('profile')
+
     return redirect('profile')
+
+
 
 @login_required
 def delete_account(request):
@@ -310,67 +326,77 @@ from .models import Course, Quiz, Question
 from django.shortcuts import render, get_object_or_404
 from .models import Course, Quiz, Question, Answer
 
+@login_required
 def quiz(request, course_slug):
-    # Fetch the course
     course = get_object_or_404(Course, course_slug=course_slug)
-    
-    # Fetch the quizzes related to the course
     quizzes = Quiz.objects.filter(course=course, is_active='Yes')
-    
-    # Fetch the questions and answers for each quiz
+
     quiz_data = []
     for quiz in quizzes:
         questions = Question.objects.filter(quiz=quiz)
         question_data = []
         for question in questions:
             answers = Answer.objects.filter(question=question)
+            # Determine if the question is multi-answer
+            correct_count = answers.filter(is_correct=True).count()
+            is_multi = correct_count > 1
             question_data.append({
                 'question': question,
-                'answers': answers
+                'answers': answers,
+                'is_multi': is_multi,
             })
         quiz_data.append({
             'quiz': quiz,
             'questions': question_data
         })
-    
+
     context = {
         'course': course,
-        'quiz_data': quiz_data,  # Pass quizzes, questions, and answers to the template
+        'quiz_data': quiz_data,
     }
-    
     return render(request, 'courses/quiz.html', context)
 
 
 
-@login_required  # Redirect to login if not authenticated
+@login_required
 def submit_quiz(request, course_slug):
     course = get_object_or_404(Course, course_slug=course_slug)
-    quiz = get_object_or_404(Quiz, course=course)
+    quizzes = Quiz.objects.filter(course=course, is_active='Yes')
 
-    if request.method == 'POST':
-        score = 0
-        total_questions = quiz.questions.count()
+    total_questions = 0
+    total_correct = 0
 
+    for quiz in quizzes:
         for question in quiz.questions.all():
-            selected_answer_id = request.POST.get(f'question_{question.id}')
-            if selected_answer_id:
-                selected_answer = Answer.objects.get(id=selected_answer_id)
-                if selected_answer.is_correct:
-                    score += 1
+            total_questions += 1
+            correct_answers = set(
+                question.answers.filter(is_correct=True).values_list('id', flat=True)
+            )
 
-        # Calculate the score as a percentage
-        percentage_score = (score / total_questions) * 100 if total_questions > 0 else 0
+            # Get selected answers
+            selected_ids = []
 
-        # Save the score to the Progress model
-        progress, created = Progress.objects.get_or_create(user=request.user, course=course)
-        progress.quiz_score = percentage_score
-        progress.save()
+            if f'question_{question.id}' in request.POST:
+                # Single answer
+                selected_ids = [int(request.POST.get(f'question_{question.id}'))]
+            elif f'question_{question.id}_multiple' in request.POST:
+                # Multiple answers
+                selected_ids = request.POST.getlist(f'question_{question.id}_multiple')
+                selected_ids = [int(id) for id in selected_ids]
 
-        messages.success(request, f"You scored {percentage_score:.2f}%!")
-        return redirect('course_detail', course_slug=course.course_slug)
+            # Check if selected_ids match correct ones exactly
+            if set(selected_ids) == correct_answers:
+                total_correct += 1
 
+    percentage_score = (total_correct / total_questions) * 100 if total_questions > 0 else 0
+
+    # Save progress
+    progress, created = Progress.objects.get_or_create(user=request.user, course=course)
+    progress.quiz_score = percentage_score
+    progress.save()
+
+    messages.success(request, f"You scored {percentage_score:.2f}%!")
     return redirect('course_detail', course_slug=course.course_slug)
-
 
 
 from .models import Progress, Course

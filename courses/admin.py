@@ -1,7 +1,9 @@
 from django.contrib import admin
 from .models import Topic, Course, Lecture, Enroll
 from .models import Quiz, Question, Answer, Progress, Comment, Review
+from ckeditor.widgets import CKEditorWidget
 
+from courses import models
 
 class TopicAdmin(admin.ModelAdmin):
     list_display = ('topic_title', 'topic_slug', 'topic_is_active')
@@ -13,6 +15,9 @@ class TopicAdmin(admin.ModelAdmin):
 
 
 class CourseAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.RichTextField: {'widget': CKEditorWidget}
+    }
     list_display = ('course_title', 'course_slug', 'course_is_active')
     list_editable = ('course_slug', 'course_is_active')
     list_filter = ('course_is_active', 'course_created_at')
@@ -22,6 +27,9 @@ class CourseAdmin(admin.ModelAdmin):
 
 
 class LectureAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.RichTextField: {'widget': CKEditorWidget}
+    }
     list_display = ('lecture_title', 'course', 'lecture_slug', 'lecture_previewable')
     list_editable = ('lecture_slug', 'lecture_previewable')
     list_filter = ('lecture_previewable', 'lecture_created_at')
