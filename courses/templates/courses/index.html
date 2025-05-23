@@ -57,11 +57,17 @@
    
     <div class="d-flex align-items-center">
         {% if user.is_authenticated %}
-            <div class="dropdown">
-                <a href="{% url 'profile' %}" class="profile-icon d-flex align-items-center justify-content-center text-decoration-none ms-4" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" class="navbar-profile-pic rounded-circle" width="40" height="40">
-  
- </a>
+           <div class="dropdown">
+    <a href="{% url 'profile' %}" class="profile-icon d-flex align-items-center justify-content-center text-decoration-none ms-4" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {% with user.socialaccount_set.first as account %}
+          {% if account and account.provider == "google" %}
+            <img src="{{ account.extra_data.picture }}" alt="{{ user.username }}" class="navbar-profile-pic rounded-circle" width="40" height="40">
+          {% else %}
+            <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" class="navbar-profile-pic rounded-circle" width="40" height="40">
+          {% endif %}
+        {% endwith %}
+    </a>
+
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                     <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
                     <li><a href="#" class="dropdown-item" onclick="document.getElementById('logout-form').submit();">

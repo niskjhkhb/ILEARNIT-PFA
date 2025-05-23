@@ -14,6 +14,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -151,7 +153,7 @@ LOGIN_URL = '/login/'  # Redirect to this URL if the user is not authenticated
 LOGIN_REDIRECT_URL = '/'  # Redirect to this URL after successful login
 LOGOUT_REDIRECT_URL = '/login/'  # Redirect to this URL after logout
 
-
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -166,16 +168,19 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # django-allauth backend
 ]
 
+
 # Email verification (optional)
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_REQUIRED = True
 
+import os
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': ('GOOGLE_CLIENT_ID'),
-            'secret': ('GOOGLE_CLIENT_SECRET'),
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'),  # Replace with your actual Google Client ID
+            'secret': os.environ.get('SECRET_KEY'),  # Replace with your actual Google Client Secret
             'key': ''
         }
     }
